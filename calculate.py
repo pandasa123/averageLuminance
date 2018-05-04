@@ -19,6 +19,9 @@ import os
 import sys
 import math
 import numpy
+import time
+
+from numba import double, njit 
 
 import matplotlib.pyplot as plt
 import csv
@@ -46,6 +49,7 @@ def averageRGB(frame):
 
 # input: (r,g,b)
 # output: luminance
+@njit(parallel=True)
 def calculateLuminance(rgb):
     rval = 0.299*rgb[0]*rgb[0]
     gval = 0.587*rgb[1]*rgb[1]
@@ -66,13 +70,11 @@ def plot(filename):
     plt.legend()
     plt.show()
 
-    
-from numba import double, jit 
-
 if __name__ == "__main__":
     # Running preqs
     setup()
     f = open(sys.argv[2], 'a')
+    f.write("time,luminance\n")
     # fastaverageRGB = jit(double[:,:])(averageRGB)
     # fastcalculateLuminance = jit(double[:,:,:])(calculateLuminance)
     
@@ -92,10 +94,10 @@ if __name__ == "__main__":
         if reading:
             averageRGB(frame)
             temp = calculateLuminance(averageRGB(frame)) + temp
-            # print("Luminance for frame ", currentFrame, " = ", temp)
+            print("Luminance for " + sys.argv[1] + " frame ", currentFrame, " = ", temp)
             if(currentFrame % fps == 0):
-                # f.write(str(currentFrame/fps) + "," + str(temp/fps) + "\n")
-                f.write(str(temp/fps) + "\n")
+                f.write(str(currentFrame/fps) + "," + str(temp/fps) + "\n")
+                # f.write(str(temp/fps) + "\n")
                 temp = 0.0
         else:
             break

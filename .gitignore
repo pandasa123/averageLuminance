@@ -1,2 +1,4 @@
-.csv
+*.csv
 /.vscode
+*.mp4
+*.bat
