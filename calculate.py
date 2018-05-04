@@ -20,6 +20,9 @@ import sys
 import math
 import numpy
 
+import matplotlib.pyplot as plt
+import csv
+
 def setup():
     if len(sys.argv) != 3:
         raise ValueError('Usage: python calculate.py [movie.mp4] [output.csv]')
@@ -48,6 +51,21 @@ def calculateLuminance(rgb):
     gval = 0.587*rgb[1]*rgb[1]
     bval = 0.114*rgb[2]*rgb[2]
     return math.sqrt(rval + gval + bval)
+
+def plot(filename):
+
+    x = []
+    y = []
+
+    x, y = numpy.loadtxt(filename, delimiter=',', unpack=True)
+
+    plt.plot(x,y, label='Luminance')
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.title('Average Luminance over time')
+    plt.legend()
+    plt.show()
+
     
 from numba import double, jit 
 
@@ -76,15 +94,16 @@ if __name__ == "__main__":
             temp = calculateLuminance(averageRGB(frame)) + temp
             # print("Luminance for frame ", currentFrame, " = ", temp)
             if(currentFrame % fps == 0):
+                # f.write(str(currentFrame/fps) + "," + str(temp/fps) + "\n")
                 f.write(str(temp/fps) + "\n")
                 temp = 0.0
         else:
             break
-            
+
         currentFrame += 1
 
     # When everything done, release the capture
     video.release()
     cv2.destroyAllWindows()
-
+    # plot(sys.argv[2])
     # print("Average Luminance = ", luminance/currentFrame)
