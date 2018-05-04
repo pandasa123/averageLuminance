@@ -8,7 +8,7 @@ Dependencies
 ---
 Run
 
-$ python calculate.py [movie.mp4]
+$ python calculate.py [movie.mp4] [output.csv]
 ----
 Output
 
@@ -21,19 +21,17 @@ import math
 import numpy
 
 def setup():
-    if len(sys.argv) != 2:
-        raise ValueError('Usage: python calculate.py [movie.mp4]')
+    if len(sys.argv) != 3:
+        raise ValueError('Usage: python calculate.py [movie.mp4] [output.csv]')
     try:
         if os.path.exists(sys.argv[1]):
             print("Found video file!")
     except OSError:
         print('Error: No File')
-    # try:
-    #     if not os.path.exists(sys.argv[2]):
-    #         print("Making directory!")
-    #         os.makedirs(sys.argv[2])
-    # except OSError:
-    #     print('Error: Creating destination')
+    
+    if os.path.exists(sys.argv[2]):
+        os.remove(sys.argv[2]) 
+
 
 # input: image
 # output: (r,g,b)
@@ -56,41 +54,37 @@ from numba import double, jit
 if __name__ == "__main__":
     # Running preqs
     setup()
-    
+    f = open(sys.argv[2], 'a')
     # fastaverageRGB = jit(double[:,:])(averageRGB)
     # fastcalculateLuminance = jit(double[:,:,:])(calculateLuminance)
     
     # Playing video from file:
     currentFrame = 0
-    luminance = 0.0
+    # luminance = 0.0
+    temp = 0.0
 
     video = cv2.VideoCapture(sys.argv[1])
+    fps = math.ceil(video.get(cv2.CAP_PROP_FPS))
     reading, frame = video.read()
     reading = True
 
     while reading:
 
-        # Capture at 1 fps
-        # video.set(cv2.CAP_PROP_POS_MSEC, (currentFrame * 1000))
         reading, frame = video.read()
         if reading:
             averageRGB(frame)
-            temp = calculateLuminance(averageRGB(frame))
-            print("Luminance for frame ", currentFrame, " = ", temp)
-
+            temp = calculateLuminance(averageRGB(frame)) + temp
+            # print("Luminance for frame ", currentFrame, " = ", temp)
+            if(currentFrame % fps == 0):
+                f.write(str(temp/fps) + "\n")
+                temp = 0.0
         else:
             break
-
-        # Saves image of the current frame in jpg file
-        # cv2.imwrite(sys.argv[2] + "\\frame%d.jpg" % currentFrame, frame)
-        # print('Saving frame: ', currentFrame)
-
-        luminance = luminance + temp
-        # To stop duplicate images
+            
         currentFrame += 1
 
     # When everything done, release the capture
     video.release()
     cv2.destroyAllWindows()
 
-    print("Average Luminance = ", luminance/currentFrame)
+    # print("Average Luminance = ", luminance/currentFrame)
