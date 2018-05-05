@@ -36,9 +36,10 @@ The script takes a measurement every `CAP_PROP_FPS` number of frames (FPS of sou
 * Man of Steel: 7913
 * Batman vs Superman Dawn of Justice: 10466
 * (Academy Award Winning) Suicide Squad: 7417
+* Wonder Woman: 7791
 * Justice League: 6439
 
-= 32245
+= 40036
 
 #### Marvel Movie
 
@@ -64,4 +65,4 @@ The script takes a measurement every `CAP_PROP_FPS` number of frames (FPS of sou
 
 = 135227
 
-Total Number of Datapoints = `167472`
+Total Number of Datapoints = `175263` 
