@@ -40,8 +40,8 @@ def setup():
 
 
 # input: image
-# output: (r,g,b)
-def averageRGB(frame):
+# output: (b,g,r)
+def averageBGR(frame):
     rowavg = numpy.average(frame, axis=0)
     avg = numpy.average(rowavg, axis=0)
     # print(avg)
@@ -51,9 +51,9 @@ def averageRGB(frame):
 # output: luminance
 @njit(parallel=True)
 def calculateLuminance(rgb):
-    rval = 0.299*rgb[0]*rgb[0]
+    bval = 0.114*rgb[0]*rgb[0]
     gval = 0.587*rgb[1]*rgb[1]
-    bval = 0.114*rgb[2]*rgb[2]
+    rval = 0.299*rgb[2]*rgb[2]
     return math.sqrt(rval + gval + bval)
 
 def plot(filename):
@@ -75,7 +75,7 @@ if __name__ == "__main__":
     setup()
     f = open(sys.argv[2], 'a')
     f.write("time,luminance\n")
-    # fastaverageRGB = jit(double[:,:])(averageRGB)
+    # fastaverageBGR = jit(double[:,:])(averageBGR)
     # fastcalculateLuminance = jit(double[:,:,:])(calculateLuminance)
     
     # Playing video from file:
@@ -92,12 +92,11 @@ if __name__ == "__main__":
 
         reading, frame = video.read()
         if reading:
-            averageRGB(frame)
-            temp = calculateLuminance(averageRGB(frame)) + temp
+            averageBGR(frame)
+            temp = calculateLuminance(averageBGR(frame)) + temp
             print("Luminance for " + sys.argv[1] + " frame ", currentFrame, " = ", temp)
             if(currentFrame % fps == 0):
                 f.write(str(currentFrame/fps) + "," + str(temp/fps) + "\n")
-                # f.write(str(temp/fps) + "\n")
                 temp = 0.0
         else:
             break
@@ -108,4 +107,3 @@ if __name__ == "__main__":
     video.release()
     cv2.destroyAllWindows()
     # plot(sys.argv[2])
-    # print("Average Luminance = ", luminance/currentFrame)
