@@ -12,7 +12,7 @@ $ python calculate.py [movie.mp4] [output.csv]
 ----
 Output
 
-Percieved Luminance = sqrt((0.299R)^2 + (0.587G)^2 + (0.114B)^2)
+Percieved Luminance = 0.2126 * R + 0.7152 * G + 0.0722 * B`
 '''
 import cv2
 import os
