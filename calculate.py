@@ -81,7 +81,7 @@ def plot(filename):
 
 if __name__ == "__main__":
     # Running preqs
-    # start = time.time()
+    start = time.time()
     setup()
     f = open(sys.argv[2], 'a')
     # f.write("time,luminance\n")
@@ -119,4 +119,4 @@ if __name__ == "__main__":
     cv2.destroyAllWindows()
     # plot(sys.argv[2])
     f.write(str(luminance/currentFrame))
-    # print("Elapsed: " + str(time.time()-start))
+    f.write("\nElapsed: " + str(time.time()-start))
