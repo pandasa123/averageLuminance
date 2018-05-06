@@ -1,8 +1,8 @@
 # Calculating Perceived Luminance 
 
-Using OpenCV 3.2+ and Numpy, this script was initially created to analyse the Perceived Luminance of DC movies and comparing them to Marvel movies. Perceived Luminance is perceived brightness, a formula given by [Digital ITU BT.601](http://www.itu.int/rec/R-REC-BT.601):
+Using OpenCV 3.2+ and Numpy, this script was initially created to analyse the Perceived Luminance of DC movies and comparing them to Marvel movies. Perceived Luminance is perceived brightness, a formula given by [w3.org](https://www.w3.org/TR/WCAG20-TECHS/G17.html#G17-tests)
 
-L = sqrt( 0.299R^2 + 0.587G^2 + 0.114B^2 )
+`L = 0.2126 * R + 0.7152 * G + 0.0722 * B`
 
 ## calculate.py
 
