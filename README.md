@@ -67,4 +67,4 @@ The script takes a measurement every `CAP_PROP_FPS` number of frames (FPS of sou
 
 Total Number of Datapoints = `175263` 
 
-[Results](https://gitlab.eecs.umich.edu/pandasa/averageLuminance/raw/master/Images/Results.png)
+![Results](https://gitlab.eecs.umich.edu/pandasa/averageLuminance/raw/master/Images/Results.png)
