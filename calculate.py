@@ -1,10 +1,11 @@
 '''
-Using OpenCV 3.2+ and Numpy, we can calculate average percieved luminance of a video    
+Using OpenCV 3.2+, Numpy, and Pillow, we can calculate average percieved luminance of a video    
 ----
 Dependencies
     - Python3
     - OpenCV 3.2+
     - Numpy
+    - Pillow
 ---
 Run
 
@@ -20,6 +21,7 @@ import sys
 import math
 import numpy
 import time
+from PIL import Image, ImageStat
 
 from numba import double, njit 
 
@@ -51,10 +53,17 @@ def averageBGR(frame):
 # output: luminance
 @njit(parallel=True)
 def calculateLuminance(rgb):
-    bval = 0.114*rgb[0]*rgb[0]
+    bval = 0.114*rgb[2]*rgb[2]
     gval = 0.587*rgb[1]*rgb[1]
-    rval = 0.299*rgb[2]*rgb[2]
+    rval = 0.299*rgb[0]*rgb[0]
     return math.sqrt(rval + gval + bval)
+
+# @njit(parallel=True)
+def brightness( frame ):
+    frame = Image.fromarray(frame)
+    stat = ImageStat.Stat(frame)
+    r,g,b = stat.mean
+    return math.sqrt(0.299*(r**2) + 0.587*(g**2) + 0.114*(b**2))
 
 def plot(filename):
 
@@ -72,15 +81,15 @@ def plot(filename):
 
 if __name__ == "__main__":
     # Running preqs
+    # start = time.time()
     setup()
     f = open(sys.argv[2], 'a')
-    f.write("time,luminance\n")
-    # fastaverageBGR = jit(double[:,:])(averageBGR)
-    # fastcalculateLuminance = jit(double[:,:,:])(calculateLuminance)
+    # f.write("time,luminance\n")
+
     
     # Playing video from file:
     currentFrame = 0
-    # luminance = 0.0
+    luminance = 0.0
     temp = 0.0
 
     video = cv2.VideoCapture(sys.argv[1])
@@ -92,11 +101,13 @@ if __name__ == "__main__":
 
         reading, frame = video.read()
         if reading:
-            averageBGR(frame)
-            temp = calculateLuminance(averageBGR(frame)) + temp
-            print("Luminance for " + sys.argv[1] + " frame ", currentFrame, " = ", temp)
+            # averageBGR(frame)
+            # temp = calculateLuminance(averageBGR(frame)) + temp
+            # print("Luminance for " + sys.argv[1] + " frame ", currentFrame, " = ", temp)
+            temp = brightness(frame) + temp
             if(currentFrame % fps == 0):
-                f.write(str(currentFrame/fps) + "," + str(temp/fps) + "\n")
+                # f.write(str(currentFrame/fps) + "," + str(temp/fps) + "\n")
+                luminance = luminance + temp
                 temp = 0.0
         else:
             break
@@ -107,3 +118,5 @@ if __name__ == "__main__":
     video.release()
     cv2.destroyAllWindows()
     # plot(sys.argv[2])
+    f.write(str(luminance/currentFrame))
+    # print("Elapsed: " + str(time.time()-start))
