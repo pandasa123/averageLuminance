@@ -9,7 +9,8 @@ Using OpenCV 3.2+ and Numpy, this script was initially created to analyse the Pe
 $ `python calculate.py [movie.mp4] [output.csv]`
 
 * Uses OpenCV's VideoCapture to go through the source video
-* Calculates average RGB 
+* Converts Gamma RGB to Linear RGB 
+* Calculates `L = 0.2126 * R + 0.7152 * G + 0.0722 * B`
 * Applies Luminance over 1 second of source video 
 * Writes to `output.csv`
 

@@ -12,7 +12,7 @@ $ python calculate.py [movie.mp4] [output.csv]
 ----
 Output
 
-Percieved Luminance = 0.2126 * R + 0.7152 * G + 0.0722 * B`
+Percieved Luminance = 0.2126 * R + 0.7152 * G + 0.0722 * B
 '''
 import cv2
 import os
@@ -42,10 +42,11 @@ def setup():
 def brightness( frame ):
     frame = Image.fromarray(frame)
     stat = ImageStat.Stat(frame)
-    r,g,b = (stat.mean/255)
-    return math.sqrt(0.2126*(relative(r)) + 0.7152*(relative(g)) + 0.0722*(relative(b)))
+    r,g,b = stat.mean
+    return (0.2126*(relativeLum(r)) + 0.7152*(relativeLum(g)) + 0.0722*(relativeLum(b)))
 
-def relative( colour ):
+def relativeLum( colour ):
+    colour = colour / 255
     if((colour) <= 0.03928):
         return (colour/12.92)
     else:
