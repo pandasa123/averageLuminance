@@ -21,10 +21,8 @@ import math
 import time
 from PIL import Image, ImageStat
 
-from numba import double, njit 
+from numba import double, njit
 
-import matplotlib.pyplot as plt
-import csv
 
 def setup():
     if len(sys.argv) != 3:
@@ -34,23 +32,27 @@ def setup():
             print("Found video file!")
     except OSError:
         print('Error: No File')
-    
+
     if os.path.exists(sys.argv[2]):
-        os.remove(sys.argv[2]) 
+        os.remove(sys.argv[2])
+
 
 # @njit(parallel=True)
-def brightness( frame ):
+def brightness(frame):
     frame = Image.fromarray(frame)
     stat = ImageStat.Stat(frame)
-    r,g,b = stat.mean
-    return (0.2126*(relativeLum(r)) + 0.7152*(relativeLum(g)) + 0.0722*(relativeLum(b)))
+    r, g, b = stat.mean
+    return (0.2126 * (relativeLum(r)) + 0.7152 * (relativeLum(g)) + 0.0722 *
+            (relativeLum(b)))
 
-def relativeLum( colour ):
+
+def relativeLum(colour):
     colour = colour / 255
-    if((colour) <= 0.03928):
-        return (colour/12.92)
+    if (colour <= 0.03928):
+        return (colour / 12.92)
     else:
-        return (((colour + 0.055)/1.055)**2.4)
+        return (((colour + 0.055) / 1.055)**2.4)
+
 
 if __name__ == "__main__":
     # Running preqs
@@ -75,7 +77,7 @@ if __name__ == "__main__":
         if reading:
             # print("Luminance for " + sys.argv[1] + " frame ", currentFrame, " = ", temp)
             temp = brightness(frame) + temp
-            if(currentFrame % fps == 0):
+            if (currentFrame % fps == 0):
                 # f.write(str(currentFrame/fps) + "," + str(temp/fps) + "\n")
                 luminance = luminance + temp
                 temp = 0.0
@@ -88,5 +90,5 @@ if __name__ == "__main__":
     video.release()
     cv2.destroyAllWindows()
 
-    f.write(str(luminance/currentFrame))
-    f.write("\nElapsed: " + str(time.time()-start))
+    f.write(str(luminance / currentFrame))
+    f.write("\nElapsed: " + str(time.time() - start))
